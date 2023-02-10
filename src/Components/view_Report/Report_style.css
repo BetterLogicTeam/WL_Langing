@@ -1,0 +1,26 @@
+.bg_table{
+    background-image: url('../../assets/background2.png') !important;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    z-index: 0 !important;
+    position: relative;
+    height: 100vh;
+}
+@media screen and (max-width:800px) {
+    .tab_res{
+        width:100%;
+        overflow:scroll
+    }
+    .bg_table{
+        background-image: url('../../assets/background2.png') !important;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        z-index: 0 !important;
+        position: relative;
+        height: auto;
+        padding-bottom: 23rem;
+    }
+    
+}
