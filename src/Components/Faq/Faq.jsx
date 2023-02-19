@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Button, Modal } from "antd";
 import "./Faq.css";
@@ -7,6 +7,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import success from "../../assets/success.png";
 import Web3 from "web3";
+import { CSVLink } from "react-csv";
 
 function Faq() {
   const [question, setquestion] = useState(0);
@@ -22,7 +23,7 @@ function Faq() {
     blockchain: "",
   });
   const [error, seterror] = useState(null);
-  const [addressError, setaddressError] = useState("")
+  const [telegram_condition, settelegram_condition] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setIsModalOpen(true);
@@ -72,7 +73,7 @@ function Faq() {
       // console.log("Web3",await web3.utils);
       //  let isMatemaskAddress= await Web3.eth.getCode("0xd5677cf67b5aa051bb40496e68ad359eb97cfbf8")
       //  console.log("isMatemaskAddress", isMatemaskAddress);
-      if(IsCorrectAddress==true){
+      if (IsCorrectAddress == true) {
         console.log("IsCorrectAddress", IsCorrectAddress);
         setgetValues(
           {
@@ -80,12 +81,10 @@ function Faq() {
             metamask_address: e.target.value,
           },
           seterror(null)
-        )
-      }else{
+        );
+      } else {
         // setaddressError("Please Enter Correct Metamask Address")
-        seterror("Please Enter Correct Metamask Address")
-
-
+        seterror("Please Enter Correct Metamask Address");
       }
     } catch (e) {
       console.log(e);
@@ -116,6 +115,36 @@ function Faq() {
       getValue.value = "";
     }
   }
+
+  const condition_telegram = async () => {
+    try {
+      if(getValues.telegram !=""){
+        setSpinner(true)
+        let Res = await axios.post("https://ico.archiecoin.online/ICo_telegram", {
+          dtaa: getValues.telegram,
+        });
+        console.log("Res", Res.data.success);
+        settelegram_condition(Res.data.success)
+        setSpinner(false)
+
+        if(Res.data.success == false){
+          seterror("Telegram handle Allready Exist")
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect( () => {
+    condition_telegram();
+  }, [getValues.telegram]);
+
+  const data = [
+    ["Name", "Age", "Gender"],
+    ["John", "20", "Male"],
+    ["Jane", "24", "Female"]
+  ];
 
   return (
     <div>
@@ -153,6 +182,8 @@ function Faq() {
       >
         {getValues.telegram}
         <div class="e-con-inner">
+
+        <CSVLink data={data} filename={"my-file.csv"}>Download Table Data</CSVLink> 
           <div
             class="elementor-element elementor-element-c24efb1 elementor-widget elementor-widget-html"
             data-id="c24efb1"
@@ -247,7 +278,7 @@ function Faq() {
                             seterror(null)
                           )}
                         />
-                        {error == null ? (
+                        {error == null && telegram_condition == true ? (
                           <Button
                             className="contBtn fs-5 mt-4"
                             onClick={(e) =>
@@ -256,20 +287,34 @@ function Faq() {
                                 : (setquestion(2), clearInput())
                             }
                           >
-                            OK{" "}
-                            <AiOutlineCheck
+                            {
+                              Spinner==true ? <> <div class="spinner-border" role="status">
+                              <span class="visually-hidden">Loading...</span>
+                            </div></>:<> Ok <AiOutlineCheck
                               style={{
                                 fontSize: "20px",
                                 marginLeft: "0.5rem",
                                 fontWeight: "700",
                                 marginTop: "-0.4rem",
                               }}
-                            />
+                            /></>
+                            }
+                            
+                           
                           </Button>
                         ) : (
+                          
                           <p className="errorMasg">
-                            {" "}
+                            {
+                              Spinner == true ?  <div class="spinner-border" role="status">
+                              <span class="visually-hidden">Loading...</span>
+                            </div>:
+                            <>
                             <AiFillWarning /> {error}
+                            </>
+                            }
+                           
+                            
                           </p>
                         )}
                       </p>
@@ -299,36 +344,33 @@ function Faq() {
                           onChange={(e) => vaild_wallet_address(e)}
                         />
                         {error !== null ? (
-                           (
                           <p className="errorMasg" style={{ width: "20rem" }}>
                             {" "}
                             <AiFillWarning /> {error}
                           </p>
-                        )
-                        ) : 
-                         <>
-                          <Button
-                        className="contBtn fs-5 mt-4"
-                        onClick={() =>
-                          getValues.metamask_address == ""
-                            ? seterror("Please fill this in")
-                            : setquestion(3)
-                        }
-                      >
-                        OK{" "}
-                        <AiOutlineCheck
-                          style={{
-                            fontSize: "20px",
-                            marginLeft: "0.5rem",
-                            fontWeight: "700",
-                            marginTop: "-0.4rem",
-                          }}
-                        />
-                      </Button>
-                         </>
-                         }
+                        ) : (
+                          <>
+                            <Button
+                              className="contBtn fs-5 mt-4"
+                              onClick={() =>
+                                getValues.metamask_address == ""
+                                  ? seterror("Please fill this in")
+                                  : setquestion(3)
+                              }
+                            >
+                              OK{" "}
+                              <AiOutlineCheck
+                                style={{
+                                  fontSize: "20px",
+                                  marginLeft: "0.5rem",
+                                  fontWeight: "700",
+                                  marginTop: "-0.4rem",
+                                }}
+                              />
+                            </Button>
+                          </>
+                        )}
                       </p>
-                     
                     </div>
                   </>
                 ) : question == 3 ? (
@@ -697,3 +739,6 @@ function Faq() {
 }
 
 export default Faq;
+
+
+// how to download table data in excel file in react js

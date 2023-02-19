@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./Report_style.css";
 import v9 from "../../assets/V9.png";
 // import { Divider, Table } from "antd";
@@ -7,42 +7,44 @@ import jsPDF from "jspdf";
 import { Table, Button } from "react-bootstrap";
 import * as autoTable from "jspdf-autotable";
 import axios from "axios";
+import { CSVLink } from "react-csv";
 
 export default function Report() {
   const columns = [
     {
-      title: "Telegram",
-      dataIndex: "telegram",
+      label: "Telegram",
+      key: "telegram",
     },
     {
-      title: "Address",
-      dataIndex: "address",
+      label: "Address",
+      key: "address",
     },
     {
-      title: "Amount USD",
-      dataIndex: "amount_BUSD",
+      label: "Amount USD",
+      key: "amount_BUSD",
     },
     {
-      title: "Multichain ",
-      dataIndex: "blockchain",
+      label: "Multichain ",
+      key: "blockchain",
     },
     {
-      title: "Experience",
-      dataIndex: "experience",
+      label: "Experience",
+      key: "experience",
     },
     {
-      title: "ICO Safe",
-      dataIndex: "ico_safe",
+      label: "ICO Safe",
+      key: "ico_safe",
     },
     {
-      title: "Features",
-      dataIndex: "features",
+      label: "Features",
+      key: "features",
     },
     {
-      title: "Invite",
-      dataIndex: "Invite",
+      label: "Invite",
+      key: "Invite",
     },
   ];
+  const [Row, setRow] = useState([])
 
   // const get_Ico_data = async () => {
   //   try {
@@ -76,26 +78,32 @@ export default function Report() {
 
     tableData.forEach((item) => {
       // loop through your table data array and push each row into rows array
-      let temp = [
-        item.telegram,
-        item.address,
-        item.amount_BUSD,
-        item.blockchain,
-        item.experience,
-        item.ico_safe,
-        item.features,
-        item.Invite,
-      ];
+
+      let temp = 
+        {
+          telegram:item.telegram,
+          address:item.address,
+          amount_BUSD:item.amount_BUSD,
+          blockchain:item.blockchain,
+          experience: item.experience,
+          ico_safe:item.ico_safe,
+          features: item.features,
+          Invite:item.Invite,
+        }
+     
       rows.push(temp);
     });
+    setRow(rows)
+
+    console.log("rows",rows);
 
     doc.autoTable(columns, rows); // call autotable with columns and rows as parameters
 
     doc.save("tableToPdf.pdf"); // save the pdf with name tableToPdf
   };
-
+console.log("data?.data.length",data?.data.length);
   return (
-    <div className="text-center text-white bg_table">
+    <div className={data?.data.length > 8 ? "text-center text-white bg_table2 ":"text-center text-white bg_table"} >
       <div className="pt-5">
         <img src={v9} alt="" className="Ico_log" />
         <p className="dripe_h3">
@@ -110,7 +118,7 @@ export default function Report() {
               {columns.map((items, index) => {
                 return (
                   <>
-                    <th className="">{items.title}</th>
+                    <th className="">{items.label}</th>
                   </>
                 );
               })}
@@ -130,7 +138,7 @@ export default function Report() {
                 <td>{item.amount_BUSD}</td>
                 <td>{item.blockchain}</td>
 
-                <td>{item.experience}</td>
+                <td className="w-25"> <input type="text" className="inputremovebg" value={item.experience} /> </td>
                 <td>{item.ico_safe}</td>
                 <td>{item.features}</td>
                 <td>{item.Invite}</td>
@@ -139,9 +147,11 @@ export default function Report() {
           </tbody>
         </Table>
 
-        <Button className="contBtn" onClick={() => handleConvert()}>
-          Convert to PDF
-        </Button>
+
+        {/* <Button className="contBtn" > */}
+        <CSVLink data={data==undefined ? Row : data.data} headers={columns}  filename={"ICO_LAUNCH_Report.csv"} className="text-decoration-none text-white contBtn">   Convert to PDF</CSVLink> 
+       
+        {/* </Button> */}
       </div>
     </div>
   );
