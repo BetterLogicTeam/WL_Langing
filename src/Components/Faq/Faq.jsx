@@ -25,6 +25,8 @@ function Faq() {
   const [error, seterror] = useState(null);
   const [telegram_condition, settelegram_condition] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [btndisable, setbtndisable] = useState(false);
+
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -37,6 +39,7 @@ function Faq() {
 
   const submitform = async () => {
     try {
+      setbtndisable(true)
       setSpinner(true);
       let res = await axios.post(
         "https://ico.archiecoin.online/create_Icon_Launch",
@@ -685,6 +688,7 @@ function Faq() {
                         />
                       </p>
                       <Button
+                      disabled={btndisable}
                         className="contBtn fs-5"
                         onClick={() => submitform()}
                       >
