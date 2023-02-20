@@ -140,11 +140,7 @@ function Faq() {
     condition_telegram();
   }, [getValues.telegram]);
 
-  const data = [
-    ["Name", "Age", "Gender"],
-    ["John", "20", "Male"],
-    ["Jane", "24", "Female"]
-  ];
+ 
 
   return (
     <div>
@@ -180,10 +176,9 @@ function Faq() {
         data-element_type="container"
         data-settings='{"content_width":"boxed"}'
       >
-        {getValues.telegram}
+       
         <div class="e-con-inner">
 
-        <CSVLink data={data} filename={"my-file.csv"}>Download Table Data</CSVLink> 
           <div
             class="elementor-element elementor-element-c24efb1 elementor-widget elementor-widget-html"
             data-id="c24efb1"

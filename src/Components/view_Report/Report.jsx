@@ -149,7 +149,7 @@ console.log("data?.data.length",data?.data.length);
 
 
         {/* <Button className="contBtn" > */}
-        <CSVLink data={data==undefined ? Row : data.data} headers={columns}  filename={"ICO_LAUNCH_Report.csv"} className="text-decoration-none text-white contBtn">   Convert to PDF</CSVLink> 
+        <CSVLink data={data==undefined ? Row : data.data} headers={columns}  filename={"ICO_LAUNCH_Report.csv"} className="text-decoration-none text-white contBtn">Download</CSVLink> 
        
         {/* </Button> */}
       </div>
