@@ -71,12 +71,25 @@ function Faq() {
 
   const vaild_wallet_address = async (e) => {
     try {
+      setSpinner(true)
       const web3 = window.web3;
       let IsCorrectAddress = Web3.utils.isAddress(e.target.value);
       // console.log("Web3",await web3.utils);
       //  let isMatemaskAddress= await Web3.eth.getCode("0xd5677cf67b5aa051bb40496e68ad359eb97cfbf8")
       //  console.log("isMatemaskAddress", isMatemaskAddress);
+
+      let addres_res=await axios.post(`https://ico.archiecoin.online/ICo_address_check`,{
+
+        "address":e.target.value
+      })
+      console.log("addres_res",addres_res.data.success==false);
+
       if (IsCorrectAddress == true) {
+        if(addres_res.data.success==false){
+         
+        seterror("Wallet Address Allready Exist");
+
+        }else{
         console.log("IsCorrectAddress", IsCorrectAddress);
         setgetValues(
           {
@@ -85,11 +98,13 @@ function Faq() {
           },
           seterror(null)
         );
+      }
       } else {
         // setaddressError("Please Enter Correct Metamask Address")
         seterror("Please Enter Correct Metamask Address");
       }
     } catch (e) {
+      setSpinner(false)
       console.log(e);
     }
   };
@@ -356,15 +371,18 @@ function Faq() {
                                   : setquestion(3)
                               }
                             >
-                              OK{" "}
-                              <AiOutlineCheck
-                                style={{
-                                  fontSize: "20px",
-                                  marginLeft: "0.5rem",
-                                  fontWeight: "700",
-                                  marginTop: "-0.4rem",
-                                }}
-                              />
+                              {
+                              Spinner==true ? <> <div class="spinner-border" role="status">
+                              <span class="visually-hidden">Loading...</span>
+                            </div></>:<> Ok <AiOutlineCheck
+                              style={{
+                                fontSize: "20px",
+                                marginLeft: "0.5rem",
+                                fontWeight: "700",
+                                marginTop: "-0.4rem",
+                              }}
+                            /></>
+                            }
                             </Button>
                           </>
                         )}
